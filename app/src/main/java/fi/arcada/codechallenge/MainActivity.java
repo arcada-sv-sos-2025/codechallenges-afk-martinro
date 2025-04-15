@@ -1,64 +1,94 @@
 package fi.arcada.codechallenge;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
+import android.content.SharedPreferences;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+// Denna MainActivity håller koll på hur många gånger man öppnat appen
+// Den säger även två olika meddelanden - En vid start och en efter man varit i settings
 public class MainActivity extends AppCompatActivity {
+    // En boolean för att hålla koll på om vi just starta appen
+    private boolean isInitialLaunch = true;
+    private TextView appCountTextView;
+    private TextView welcomeTextView;
+    private Button settingsButton;
 
-TextView myview1;
-TextView myview2;
-Button calc;
+    // Vi gör en instans av SharedPreferences
+    private SharedPreferences sharedPreferences;
+    // Man kan ha många olika shared preferences
+    // En sharedPrefence är som cookies i webdev
+    // Man spara sen nyckel-värd par (lite som HashMaps från tidigare under lektionen)
+    // Vi gör en sharedPreferences för våra "counters" (räknare)
+    // Vi gör sen också vår "räknare"
+    private static final String PREFS_NAME = "AppCounterPrefs";
+    private static final String APP_COUNTER_KEY = "appCounter";
 
-ArrayList<Double> numbers = new ArrayList<>();
-
-
-
-
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myview1 = (TextView)findViewById(R.id.myview1);
+        appCountTextView = findViewById(R.id.myview1);
+        welcomeTextView = findViewById(R.id.myview2);
 
-        myview1.setText("CodeChallenge2");
+        // Vår settings button - Med snygg icon
+        settingsButton = findViewById(R.id.settings);
 
-        myview2 = (TextView)findViewById(R.id.myview2);
+        // Här öppnar vi den specifika sharedPreferences filen vi definerat (PREFS_NAME dvs. AppCounterPrefs)
+        // Vi läser den sedan i privat läge (Default) så vår klass har tillgång till den
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-        myview2.setText("Min app fungerar fint");
+        // En enkel intro text
+        welcomeTextView.setText("Hej på dig!");
 
-        calc = (Button)findViewById(R.id.calc);
-        calc.setOnClickListener(v -> calculate());
+        // Hämta värdet som just nu finns i vår nyckel APP_COUNTER_KEY
+        int appCounter = sharedPreferences.getInt(APP_COUNTER_KEY, 0);
 
-        numbers.add(0.0);
-        numbers.add(93.0);
-        numbers.add(2.0);
-        numbers.add(32.0);
-        numbers.add(4.0);
-        numbers.add(53.0);
-        numbers.add(6.0);
-        numbers.add(78.0);
-        numbers.add(8.0);
-        numbers.add(96.0);
+        // Öka värdet (vi har ju just öppnat appen och denna onCreate() körs)
+        appCounter++;
+
+        // Spara det nya värdet med edit & apply
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(APP_COUNTER_KEY, appCounter);
+        editor.apply();
+
+        // Vi visar vår fina counter i vår textView
+        appCountTextView.setText(String.valueOf(appCounter));
+
+        // Vår clickListener för settings
+        settingsButton.setOnClickListener(v -> openSettings());
     }
 
-    public void calculate() {
-        int sum = 0;
-        for (int i = 0; i < numbers.size(); i++) {
-            sum += numbers.get(i);
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String savedInput = sharedPreferences.getString("UserInput", null);
+        // Vi kan använda vår boolean för att se till att saker funkar när vi kommer från settings
+        if (savedInput != null && !savedInput.isEmpty()) {
+            welcomeTextView.setText(savedInput);
+        } else {
+            welcomeTextView.setText("Hej igen!");
         }
-        double average = (double)sum / numbers.size();
-        myview2.setText("Medeltal: " + average);
-
+        isInitialLaunch = false;
     }
 
+    private void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
 }
+
+
