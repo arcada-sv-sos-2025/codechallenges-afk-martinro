@@ -1,50 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/myview1"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/inputValues"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Code Challenge"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="Ange värden i double format"
+        android:inputType="text" />
 
-    <TextView
-        android:id="@+id/myview2"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/inputWindowSize"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="40dp"
-        android:text=""
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calc" />
+        android:hint="Fönsterstorlek"
+        android:inputType="number" />
 
     <Button
-        android:id="@+id/calc"
+        android:id="@+id/btnCalculate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="212dp"
-        android:text="Beräkna"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="Beräkna SMA" />
 
-    <Button
-        android:id="@+id/settings"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/outputResult"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="28dp"
-        android:text="Settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Resultat:"
+        android:paddingTop="16dp"
+        android:textSize="16sp" />
+</LinearLayout>
